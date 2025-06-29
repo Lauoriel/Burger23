@@ -86,7 +86,6 @@
       border-radius: 0 0 10px 10px;
     }
     
-    /* NUEVO ESTILO PARA EL LOGO CON HAMBURGUESA */
     .logo-container {
       display: flex;
       align-items: center;
@@ -110,6 +109,7 @@
       margin: 0;
       letter-spacing: 1px;
       font-weight: 800;
+      font-family: 'Arial Black', Arial, sans-serif;
     }
     
     .title-container p {
@@ -810,7 +810,7 @@
   
   <!-- CONTENIDO PRINCIPAL -->
   <div class="main-content">
-    <!-- NUEVO HEADER CON HAMBURGUESA A LA IZQUIERDA -->
+    <!-- HEADER CON HAMBURGUESA A LA IZQUIERDA -->
     <header>
       <div class="logo-container">
         <div class="logo">
@@ -1219,109 +1219,113 @@
         guardarDatosTemporales();
       });
       
-      // Imprimir ticket (NUEVO DISEÑO)
+      // IMPRIMIR TICKET COMPATIBLE CON IMPRESORAS TÉRMICAS
       function imprimirTicket(order) {
-        // Crear contenido del ticket con el nuevo diseño
+        // Crear contenido del ticket optimizado para impresión térmica
         var ticketContent = `
           <html>
             <head>
               <title>Ticket Burger23</title>
               <style>
+                /* ESTILOS COMPATIBLES CON IMPRESORAS TÉRMICAS */
                 body { 
-                  font-family: Arial, sans-serif; 
-                  padding: 20px; 
-                  max-width: 300px; 
-                  margin: 0 auto; 
-                  background-color: #fff;
+                  font-family: 'Courier New', Courier, monospace;
+                  font-size: 12px;
+                  width: 80mm;
+                  margin: 0;
+                  padding: 10px;
+                  background: white;
+                  color: black;
                 }
                 .header { 
                   text-align: center; 
-                  margin-bottom: 15px; 
+                  margin-bottom: 5px; 
+                  font-weight: bold;
                 }
                 .header h1 { 
-                  font-size: 28px; 
-                  margin: 0; 
-                  color: #000;
-                  font-weight: 800;
+                  font-size: 18px; 
+                  margin: 0;
+                  text-transform: uppercase;
                   letter-spacing: 1px;
                 }
-                .section { 
-                  margin: 15px 0; 
+                .header p { 
+                  margin: 2px 0 0; 
+                  font-size: 10px;
+                }
+                .divider {
+                  border-top: 1px dashed #000;
+                  margin: 8px 0;
                 }
                 .section-title {
                   font-weight: bold;
-                  margin-top: 10px;
                   text-align: center;
                   text-transform: uppercase;
-                  font-size: 18px;
-                  padding-bottom: 5px;
-                  border-bottom: 1px dashed #000;
+                  font-size: 12px;
+                  margin: 8px 0 5px;
                 }
                 .section-content {
-                  margin-top: 10px;
-                  text-align: center;
-                  font-size: 16px;
+                  margin-top: 5px;
                 }
-                .detail-item {
-                  display: flex;
-                  justify-content: space-between;
-                  margin-bottom: 5px;
+                table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  font-size: 11px;
+                }
+                td {
                   padding: 3px 0;
                 }
                 .total {
                   font-weight: bold;
-                  font-size: 20px;
+                  font-size: 14px;
                   text-align: center;
-                  margin: 20px 0;
-                  padding-top: 10px;
+                  margin: 10px 0;
+                  padding-top: 8px;
                   border-top: 1px dashed #000;
                 }
                 .footer { 
                   text-align: center; 
-                  margin-top: 30px; 
-                  font-size: 14px;
+                  margin-top: 15px; 
+                  font-size: 10px;
                   font-weight: bold;
                 }
-                .divider {
-                  border-top: 1px dashed #000;
-                  margin: 15px 0;
+                .barcode {
+                  text-align: center;
+                  margin: 5px 0;
+                  font-family: 'Libre Barcode 128', cursive;
+                  font-size: 24px;
                 }
               </style>
             </head>
             <body>
               <div class="header">
                 <h1>BURGER 23</h1>
+                <p>Sistema de gestión de pedidos</p>
               </div>
               
               <div class="divider"></div>
 
-              <div class="section">
-                <div class="section-title">Dirección de entrega</div>
-                <div class="section-content">${order.dir}</div>
-              </div>
+              <div class="section-title">Dirección de entrega</div>
+              <div class="section-content">${order.dir}</div>
               
               <div class="divider"></div>
 
-              <div class="section">
-                <div class="section-title">Detalle</div>
-                <div class="section-content">
-                  ${order.items.map(item => `
-                    <div class="detail-item">
-                      <div>${item.desc}</div>
-                      <div>$${item.precio.toFixed(2)}</div>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
+              <div class="section-title">Detalle</div>
+              <table>
+                ${order.items.map(item => `
+                  <tr>
+                    <td>${item.desc}</td>
+                    <td align="right">$${item.precio.toFixed(2)}</td>
+                  </tr>
+                `).join('')}
+              </table>
               
               <div class="divider"></div>
 
-              <div class="section">
-                <div class="section-title">Total</div>
-                <div class="total">
-                  $${order.items.reduce((sum, item) => sum + item.precio, 0).toFixed(2)}
-                </div>
+              <div class="total">
+                TOTAL: $${order.items.reduce((sum, item) => sum + item.precio, 0).toFixed(2)}
               </div>
+              
+              <div class="barcode">*${order.id}*</div>
               
               <div class="footer">
                 <div>GRACIAS POR SU COMPRA</div>
@@ -1345,7 +1349,7 @@
         };
       }
       
-      // Renderizar pedidos por estado - CORRECCIÓN APLICADA
+      // Renderizar pedidos por estado
       function renderSubLists() {
         // Estados corregidos para coincidir con los IDs del HTML
         ['cocina', 'camino', 'entregados'].forEach(function(estado) {
